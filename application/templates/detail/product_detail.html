@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-md-12 pt-3 ">
+            <nav aria-label="breadcrumb">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'base' %}">Главная</a></li>
+                    <li class="breadcrumb-item"><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+                </ol>
+
+            </nav>
+
+            <div class="row justify-content-md-center">
+<div class="col-lg-2 mt-3 ">
+            <div class="list-group">
+                {% for category in categories %}
+                <a href="{{ category.get_absolute_url }}" class="list-group-item">{{ category.name }}</a>
+                {% endfor %}
+
+            </div>
+        </div>
+
+                <div class="col-md-5">
+
+                    <h4>{{ product.name }}</h4>
+                    <hr>
+                    <p>Тип ткани: {{ product.cloth_type }}</p>
+                    <p>Размер: {{ product.size }}</p>
+
+                    <li class="list-group-item">
+
+                            Наличие: {% if product.stock %}<strong class="badge bg-success">
+                            Есть в наличии - {{ product.stock }} шт.
+                        </strong>{% else %}
+                            <strong class="badge bg-danger">Нет в наличии</strong>
+                        {% endif %}
+
+                        </li>
+                <div class="card-body text-center">
+
+
+
+
+                               {% if request.user.is_authenticated %}
+
+                            {% if product.stock %}
+                                {% if product not in cart.products_in_cart %}
+                                    <a href="{% url 'add_to_cart' ct_model=product.ct_model slug=product.slug %}">
+                                        <button class="btn btn-primary">
+                                    Добавить в корзину
+                                            </button>
+                                    </a>
+                                {% else %}
+                                    <a href="#" class="btn btn-default" disabled="">Добавлен в корзину</a>
+                                {% endif %}
+                            {% else %}
+                                    <a href="#" class="btn btn-default" disabled="">Нет в наличии</a>
+                            {% endif %}
+                        {% else %}
+                            <a href="#" class="btn btn-default" disabled="">
+                            Авторизуйтесь или зарегистрируйтесь, только авторизованные пользователи
+                            могут осуществлять заказы
+                            </a>
+                        {% endif %}
+
+
+
+                    </div>
+
+                </div>
+<div class="col-md-4">
+                    <img src="{{ product.photo_medium.url }}" class="img-fluid">
+                </div>
+            </div>
+
+
+
+                </div>
+
+    </div>
+{% endblock content %}
